@@ -11,7 +11,8 @@ pico_sdk_init()
 
 # rest of your project
 add_executable(main
-   main.c
+	main.c
+	display.c
 )
 
 # Add pico_stdlib library which aggregates commonly used features
