@@ -6,6 +6,8 @@ https://files.waveshare.com/wiki/common/ST7796S_Datasheet.pdf
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "character_set/character.h"
+
 #define MOSI	 11
 #define SCLK	 10
 #define LCD_CS 9
@@ -88,14 +90,14 @@ void set_coords(uint16_t x1, uint16_t x2, uint16_t y1, uint16_t y2)
 	send_command(0x2B, y, sizeof(y)); // row set
 }
 
-void draw_rect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
+void draw_rect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t colour)
 {
 	set_coords(x1, x2, y1, y2);
 
 	// convert tobig endian byte order
 	uint8_t pixel[2] = {
-		(uint8_t)(color >> 8),
-		(uint8_t)(color & 0xFF)
+		(uint8_t)(colour >> 8),
+		(uint8_t)(colour & 0xFF)
 	};
 
 	// memory write command 2Ch
@@ -116,14 +118,14 @@ void draw_rect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t colo
 
 	gpio_put(LCD_CS, 1);
 }
-void draw_pixel(uint16_t x, uint16_t y, uint16_t color)
+void draw_pixel(uint16_t x, uint16_t y, uint16_t colour)
 {
 	set_coords(x,x,y,y);
 
 	// convert tobig endian byte order
 	uint8_t pixel[2] = {
-		(uint8_t)(color >> 8),
-		(uint8_t)(color & 0xFF)
+		(uint8_t)(colour >> 8),
+		(uint8_t)(colour & 0xFF)
 	};
 
 	// memory write command 2Ch
@@ -137,6 +139,15 @@ void draw_pixel(uint16_t x, uint16_t y, uint16_t color)
 	spi_write_blocking(SPI_DEVICE, pixel, 2);
 
 	gpio_put(LCD_CS, 1);
+}
+
+void draw_character(const Character* c, uint16_t colour)
+{
+	// c is a bitmap of the character
+	for (int i=0; i<CHAR_HEIGHT; i++)
+		for (int j=0; j<CHAR_WIDTH; j++)
+			if ((c->map[i] >> j) & 1ULL) // bit = 1
+				draw_pixel(j+100, i+100, colour);
 }
 
 void init_lcd(void)

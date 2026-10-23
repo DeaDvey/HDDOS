@@ -7,6 +7,7 @@ https://files.waveshare.com/wiki/common/ST7796S_Datasheet.pdf
 #include <stdbool.h>
 
 #include "display.h"
+#include "character_set/character.h"
 
 void led_status();
 
@@ -15,6 +16,7 @@ int main(void)
 	led_status(); // turn on the onboard LED
 	init_lcd();
 	draw_pixel(50,50,0x00f8);
+	draw_character(CHARACTER_SET[0],0x00f8);
 
 	/*
 	while (true) {
