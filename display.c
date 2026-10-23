@@ -14,7 +14,7 @@ https://files.waveshare.com/wiki/common/ST7796S_Datasheet.pdf
 #define LCD_DC 14
 #define LCD_RST 13
 #define LCD_BL 15
-#define SLCK_SPEED 60*1000*1000
+#define SLCK_SPEED 1*1000*1000
 #define SPI_DEVICE spi1
 
 void initialise_pins(void)
@@ -143,11 +143,18 @@ void draw_pixel(uint16_t x, uint16_t y, uint16_t colour)
 
 void draw_character(const Character* c, uint16_t colour)
 {
+	draw_pixel(100, 100, colour);
+	sleep_ms(10);
+	draw_pixel(111, 111, 0xf800);
+	sleep_ms(10);
+	draw_pixel(122, 122, 0x0000);
+			/*
 	// c is a bitmap of the character
-	for (int i=0; i<CHAR_HEIGHT; i++)
-		for (int j=0; j<CHAR_WIDTH; j++)
+	for (int i=0; i<71; i++)
+		for (int j=0; j<40; j++)
 			if ((c->map[i] >> j) & 1ULL) // bit = 1
 				draw_pixel(j+100, i+100, colour);
+			*/
 }
 
 void init_lcd(void)

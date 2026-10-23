@@ -15,7 +15,6 @@ int main(void)
 {
 	led_status(); // turn on the onboard LED
 	init_lcd();
-	draw_pixel(50,50,0x00f8);
 	draw_character(CHARACTER_SET[0],0x00f8);
 
 	/*
