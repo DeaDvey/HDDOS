@@ -12,6 +12,7 @@ pico_sdk_init()
 # rest of your project
 add_executable(main
 	main.c
+	pico.c
 	display.c
 	text.c
 
