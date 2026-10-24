@@ -10,7 +10,12 @@ typedef struct {
 	char name;
 } Character;
 
+extern const Character null_bmp;
 extern const Character a_bmp;
+extern const Character b_bmp;
+extern const Character c_bmp;
+extern const Character d_bmp;
+
 extern const Character* CHARACTER_SET[64];
 extern const int CHAR_WIDTH;
 extern const int CHAR_HEIGHT;

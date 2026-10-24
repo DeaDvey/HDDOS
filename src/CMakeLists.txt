@@ -13,7 +13,14 @@ pico_sdk_init()
 add_executable(main
 	main.c
 	display.c
+	text.c
+
+	character_set/null.c
 	character_set/a.c
+	character_set/b.c
+	character_set/c.c
+	character_set/d.c
+
 	character_set/set.c
 	character_set/character.h
 )

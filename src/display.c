@@ -14,8 +14,11 @@ https://files.waveshare.com/wiki/common/ST7796S_Datasheet.pdf
 #define LCD_DC 14
 #define LCD_RST 13
 #define LCD_BL 15
-#define SLCK_SPEED 1*1000*1000
+#define SLCK_SPEED 60*1000*1000
 #define SPI_DEVICE spi1
+
+const int SCREEN_HEIGHT = 320;
+const int SCREEN_WIDTH = 480;
 
 void initialise_pins(void)
 {
@@ -70,7 +73,7 @@ void send_command(uint8_t cmd, const uint8_t data[], size_t length)
 		gpio_put(LCD_DC, 1);
 		spi_write_blocking(SPI_DEVICE, data, length);
 	}
-	gpio_put(LCD_CS, 1); // Always ends with LCD_CS pushing 1
+	gpio_put(LCD_CS, 0); // Always ends with LCD_CS pushing 0
 }
 
 void set_coords(uint16_t x1, uint16_t x2, uint16_t y1, uint16_t y2)
@@ -120,7 +123,7 @@ void draw_rect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t colo
 }
 void draw_pixel(uint16_t x, uint16_t y, uint16_t colour)
 {
-	set_coords(x,x,y,y);
+	set_coords(x, x+1, y, y+1);
 
 	// convert tobig endian byte order
 	uint8_t pixel[2] = {
@@ -136,25 +139,26 @@ void draw_pixel(uint16_t x, uint16_t y, uint16_t colour)
 	gpio_put(LCD_CS, 0);
 	gpio_put(LCD_DC, 1);
 
-	spi_write_blocking(SPI_DEVICE, pixel, 2);
+	uint32_t width  = (uint32_t)x - x + 1;
+	uint32_t height = (uint32_t)y - y + 1;
+	uint32_t count  = width * height;
+
+	for (uint32_t i = 0; i < count; i++) {
+		spi_write_blocking(SPI_DEVICE, pixel, 2);
+	}
 
 	gpio_put(LCD_CS, 1);
 }
 
-void draw_character(const Character* c, uint16_t colour)
+void draw_character(const Character* c, uint16_t colour, uint8_t pos_x, uint8_t pos_y)
 {
-	draw_pixel(100, 100, colour);
-	sleep_ms(10);
-	draw_pixel(111, 111, 0xf800);
-	sleep_ms(10);
-	draw_pixel(122, 122, 0x0000);
-			/*
+	uint16_t left_x_coord = (pos_x * CHAR_WIDTH);
+	uint16_t upper_y_coord = SCREEN_HEIGHT-(pos_y * CHAR_HEIGHT)-1;
 	// c is a bitmap of the character
-	for (int i=0; i<71; i++)
-		for (int j=0; j<40; j++)
-			if ((c->map[i] >> j) & 1ULL) // bit = 1
-				draw_pixel(j+100, i+100, colour);
-			*/
+	for (int i=0; i<CHAR_HEIGHT; i++)
+		for (int j=0; j<CHAR_WIDTH; j++)
+			if ((c->map[i] >> (CHAR_WIDTH-j-1)) & 1ULL) // bit = 1
+				draw_pixel(upper_y_coord-i, left_x_coord+j, colour);
 }
 
 void init_lcd(void)

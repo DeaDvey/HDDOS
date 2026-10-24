@@ -5,8 +5,10 @@ https://files.waveshare.com/wiki/common/ST7796S_Datasheet.pdf
 #include "hardware/spi.h"
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "display.h"
+#include "text.h"
 #include "character_set/character.h"
 
 void led_status();
@@ -15,7 +17,13 @@ int main(void)
 {
 	led_status(); // turn on the onboard LED
 	init_lcd();
-	draw_character(CHARACTER_SET[0],0x00f8);
+	/*
+	draw_character(CHARACTER_SET[0],0x00f8,0,0);
+	draw_character(CHARACTER_SET[1],0x00f8,1,0);
+	draw_character(CHARACTER_SET[2],0x00f8,2,0);
+	*/
+	char string[] = "abba\ncab\ndaabaca";
+	print_to_coords(string, 0,0,true);
 
 	/*
 	while (true) {
