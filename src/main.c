@@ -7,23 +7,26 @@
 #include "pico.h"
 #include "display.h"
 #include "text.h"
+#include "keyboard.h"
+#include "tty.h"
 #include "character_set/character.h"
 
 int main(void)
 {
+	// setup
 	led_status(true); // turn on the onboard LED
 	init_lcd();
-	/*
-	draw_character(CHARACTER_SET[0],0x00f8,0,0);
-	draw_character(CHARACTER_SET[1],0x00f8,1,0);
-	draw_character(CHARACTER_SET[2],0x00f8,2,0);
-	*/
-	char string[] = "abba\ncab\ndaabaca";
+	init_keyboard_pins();
+
+	char string[] = "hello world";
 	print_to_coords(string, 0,0,true);
 
-	/*
-	while (true) {
-		tight_loop_contents();
-	}*/
+	while (true)
+	{
+		int value = get_pressed();
+		draw_character(CHARACTER_SET[value], 0x00f8, 0xffff, 0, 1);
+		sleep_ms(100);
+	}
+
 }
 

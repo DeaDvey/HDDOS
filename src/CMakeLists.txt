@@ -14,13 +14,38 @@ add_executable(main
 	main.c
 	pico.c
 	display.c
+	keyboard.c
 	text.c
+	tty.c
 
 	character_set/null.c
 	character_set/a.c
 	character_set/b.c
 	character_set/c.c
 	character_set/d.c
+	character_set/e.c
+	character_set/f.c
+	character_set/g.c
+	character_set/h.c
+	character_set/i.c
+	character_set/j.c
+	character_set/k.c
+	character_set/l.c
+	character_set/m.c
+	character_set/n.c
+	character_set/o.c
+	character_set/p.c
+	character_set/q.c
+	character_set/r.c
+	character_set/s.c
+	character_set/t.c
+	character_set/u.c
+	character_set/v.c
+	character_set/w.c
+	character_set/x.c
+	character_set/y.c
+	character_set/z.c
+	character_set/space.c
 
 	character_set/set.c
 	character_set/character.h

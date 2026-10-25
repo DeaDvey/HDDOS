@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
+#include <ctype.h>
 #include "text.h"
 #include "display.h"
 #include "character_set/character.h"
@@ -18,7 +19,7 @@ void print_to_coords(const char* ascii_string, uint8_t pos_x, uint8_t pos_y, boo
 				i++;
 				continue;
 		};
-		draw_character(CHARACTER_SET[string[i]], 0x00f8, pos_x, pos_y);
+		draw_character(CHARACTER_SET[string[i]], 0x00f8, 0xffff, pos_x, pos_y);
 		pos_x++;
 		if (pos_x >= (SCREEN_WIDTH/CHAR_WIDTH)) {
 			if (wrap) { // If wrap is set, then just wrap to the next line
@@ -36,29 +37,29 @@ void ascii_to_madscii(const char* string, uint8_t* output)
 	int i = 0;
 	bool done = false;
 	while (! done) {
-		switch (string[i]) {
-			case 0:
-				output[i] = 0x00;
-				done = true;
-				break;
-			case 'a':
-				output[i] = 0x01;
-				break;
-			case 'b':
-				output[i] = 0x02;
-				break;
-			case 'c':
-				output[i] = 0x03;
-				break;
-			case 'd':
-				output[i] = 0x04;
-				break;
-			case 0x0a:
-				output[i] = 0x1c;
-				break;
-			default:
-				i--;
-				break;
+		char current_letter = tolower(string[i]);
+		if (current_letter >= 0x61 && current_letter <= 0x7a)
+				output[i] = current_letter-'a'+1;
+		else {
+			switch (current_letter) {
+				case 0: // null
+					output[i] = 0x00;
+					done = true;
+					break;
+				case 0x0a:
+					output[i] = 0x1c;
+					break;
+				case 0x08: // backspace, so remove previous character
+					i-=2;
+					output[i] = 0x00;
+					break;
+				case 0x20: // space
+					output[i] = 0x1b;
+					break;
+				default:
+					i--;
+					break;
+			}
 		}
 		i++;
 	}

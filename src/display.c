@@ -150,15 +150,25 @@ void draw_pixel(uint16_t x, uint16_t y, uint16_t colour)
 	gpio_put(LCD_CS, 1);
 }
 
-void draw_character(const Character* c, uint16_t colour, uint8_t pos_x, uint8_t pos_y)
+void draw_character(const Character* c, uint16_t fg, uint16_t bg, uint8_t pos_x, uint8_t pos_y)
 {
 	uint16_t left_x_coord = (pos_x * CHAR_WIDTH);
 	uint16_t upper_y_coord = SCREEN_HEIGHT-(pos_y * CHAR_HEIGHT)-1;
+
+	// draw bg
+	// TODO in theory, this is more efficient, but can't get it to work
+	//draw_rect( left_x_coord,left_x_coord+CHAR_WIDTH, upper_y_coord-CHAR_HEIGHT, upper_y_coord, bg);
+
+	// draw character
 	// c is a bitmap of the character
-	for (int i=0; i<CHAR_HEIGHT; i++)
-		for (int j=0; j<CHAR_WIDTH; j++)
-			if ((c->map[i] >> (CHAR_WIDTH-j-1)) & 1ULL) // bit = 1
-				draw_pixel(upper_y_coord-i, left_x_coord+j, colour);
+	for (int i=0; i<CHAR_HEIGHT; i++) {
+		for (int j=0; j<CHAR_WIDTH; j++) {
+			if ((c->map[i] >> (CHAR_WIDTH-j-1)) & 1ULL) { // bit = 1
+				draw_pixel(upper_y_coord-i, left_x_coord+j, fg);
+			}
+			else draw_pixel(upper_y_coord-i, left_x_coord+j, bg);
+		}
+	}
 }
 
 void init_lcd(void)
