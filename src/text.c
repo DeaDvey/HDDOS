@@ -6,10 +6,8 @@
 #include "display.h"
 #include "character_set/character.h"
 
-void print_to_coords(const char* ascii_string, uint8_t pos_x, uint8_t pos_y, bool wrap)
+void print_madscii(const uint8_t* string, uint8_t pos_x, uint8_t pos_y, bool wrap)
 {
-	uint8_t string[strlen(ascii_string)];
-	ascii_to_madscii(ascii_string, string);
 	int i = 0;
 	while (string[i] != 0)
 	{
@@ -30,6 +28,13 @@ void print_to_coords(const char* ascii_string, uint8_t pos_x, uint8_t pos_y, boo
 		}
 		i++;
 	};
+}
+
+void print_ascii(const char* ascii_string, uint8_t pos_x, uint8_t pos_y, bool wrap)
+{
+	uint8_t string[strlen(ascii_string)];
+	ascii_to_madscii(ascii_string, string);
+	print_madscii(string, pos_x, pos_y, wrap);
 }
 
 void ascii_to_madscii(const char* string, uint8_t* output)

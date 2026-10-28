@@ -18,15 +18,12 @@ int main(void)
 	init_lcd();
 	init_keyboard_pins();
 
-	char string[] = "hello world";
-	print_to_coords(string, 0,0,true);
-
-	while (true)
-	{
-		int value = get_pressed();
-		draw_character(CHARACTER_SET[value], 0x00f8, 0xffff, 0, 1);
-		sleep_ms(100);
+	for (int i=0; i<4; i++) {
+		gpio_set_irq_enabled_with_callback(KB_PIN[i], GPIO_IRQ_EDGE_RISE, true, &interrupt_pressed);
 	}
 
+	start_tty();
+
+	return 0;
 }
 
