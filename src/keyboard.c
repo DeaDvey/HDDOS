@@ -11,7 +11,6 @@ volatile uint8_t kb_buffer = 0;
 
 void interrupt_pressed(uint gpio, uint32_t events)
 {
-	sleep_ms(2);
 	uint8_t value = 0;
 	for (int i=0;i<3;i++) {
 		value |= gpio_get(KB_PIN[i]) << i;
